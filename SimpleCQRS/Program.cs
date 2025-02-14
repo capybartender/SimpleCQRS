@@ -11,40 +11,40 @@ public class Program
         var eventBroker = new EventBroker();
         var person = new Person(eventBroker);
 
-        var age = eventBroker.ExecuteQuery<int>(new GetAgeQuery(person));
-        Console.WriteLine($"Age is {age}\n");
+        var status = eventBroker.ExecuteQuery<int>(new GetStatusQuery(person));
+        Console.WriteLine($"Status is {status}\n");
 
-        eventBroker.ExecuteCommand(new ChangeAgeCommand(person, 2));
-        eventBroker.ExecuteCommand(new ChangeAgeCommand(person, 4));
-        eventBroker.ExecuteCommand(new ChangeAgeCommand(person, 8));
-        eventBroker.ExecuteCommand(new ChangeAgeCommand(person, 16));
-        eventBroker.ExecuteCommand(new ChangeAgeCommand(person, 32));
-        eventBroker.ExecuteCommand(new ChangeAgeCommand(person, 64));
+        eventBroker.ExecuteCommand(new ChangeStatusCommand(person, 2));
+        eventBroker.ExecuteCommand(new ChangeStatusCommand(person, 4));
+        eventBroker.ExecuteCommand(new ChangeStatusCommand(person, 8));
+        eventBroker.ExecuteCommand(new ChangeStatusCommand(person, 16));
+        eventBroker.ExecuteCommand(new ChangeStatusCommand(person, 32));
+        eventBroker.ExecuteCommand(new ChangeStatusCommand(person, 64));
 
         PrintCommands(eventBroker.AllEvents);
 
-        age = eventBroker.ExecuteQuery<int>(new GetAgeQuery(person));
-        Console.WriteLine($"Age is {age}\n");
+        status = eventBroker.ExecuteQuery<int>(new GetStatusQuery(person));
+        Console.WriteLine($"Status is {status}\n");
 
         eventBroker.UndoLastCommand();
 
-        age = eventBroker.ExecuteQuery<int>(new GetAgeQuery(person));
-        Console.WriteLine($"Age is {age}\n");
+        status = eventBroker.ExecuteQuery<int>(new GetStatusQuery(person));
+        Console.WriteLine($"Status is {status}\n");
 
         PrintCommands(eventBroker.AllEvents);
     }
 
-    private static void PrintAge(int age)
+    private static void PrintStatus(int status)
     {
-        Console.WriteLine($"Current age is {age}");
+        Console.WriteLine($"Current status is {status}");
     }
 
     private static void PrintCommands(IEnumerable<BaseEvent> events)
     {
         foreach (var @event in events)
         {
-            var ageChangedEvent = @event as AgeChangedEvent;
-            Console.WriteLine($"Old age: {ageChangedEvent.OldAge}, new age: {ageChangedEvent.NewAge}");
+            var statusChangedEvent = @event as StatusChangedEvent;
+            Console.WriteLine($"Old status: {statusChangedEvent.OldStatus}, new status: {statusChangedEvent.NewStatus}");
         }
         Console.WriteLine();
     }

@@ -27,9 +27,9 @@ public class EventBroker
     {
         var lastEvent = AllEvents.LastOrDefault();
 
-        if(lastEvent != null && lastEvent is AgeChangedEvent e)
+        if(lastEvent != null && lastEvent is StatusChangedEvent e)
         {
-            ExecuteCommand(new ChangeAgeCommand(e.Target, e.OldAge, false));
+            ExecuteCommand(new ChangeStatusCommand(e.Target, e.OldStatus, register: false));
 
             AllEvents.Remove(lastEvent);
         }

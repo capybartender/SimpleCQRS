@@ -6,7 +6,7 @@ namespace SimpleCQRS;
 
 public class Person
 {
-    private int _age;
+    private int _status;
 
     private EventBroker broker;
 
@@ -20,24 +20,24 @@ public class Person
 
     private void OnQuery(object sender, BaseQuery query)
     {
-        if(query is GetAgeQuery && query.Target == this)
+        if(query is GetStatusQuery && query.Target == this)
         {
-            query.Result = _age;
+            query.Result = _status;
         }
     }
 
     private void OnCommand(object sender, BaseCommand<Person> command)
     {
-        if(command is ChangeAgeCommand cmd && command.Target == this)
+        if(command is ChangeStatusCommand cmd && command.Target == this)
         {
-            var newAge = cmd.Age;
+            var newStatus = cmd.Status;
 
             if (cmd.Register)
             {
-                broker.AllEvents.Add(new AgeChangedEvent(this, _age, newAge)); 
+                broker.AllEvents.Add(new StatusChangedEvent(this, _status, newStatus)); 
             }
 
-            _age = newAge;
+            _status = newStatus;
         }
     }
 }
