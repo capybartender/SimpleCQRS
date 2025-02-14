@@ -1,9 +1,6 @@
-﻿using System;
+﻿namespace SimpleCQRS.Commands;
 
-namespace SimpleCQRS.Commands
+public abstract class BaseCommand<T> : EventArgs where T : class
 {
-    public class BaseCommand : EventArgs
-    {
-        public Person Target;
-    }
+    public T Target { get; set; }
 }

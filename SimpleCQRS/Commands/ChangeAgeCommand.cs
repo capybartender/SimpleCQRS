@@ -1,16 +1,15 @@
-﻿namespace SimpleCQRS.Commands
+﻿namespace SimpleCQRS.Commands;
+
+public class ChangeAgeCommand : BaseCommand<Person>
 {
-    public class ChangeAgeCommand : BaseCommand
+    public ChangeAgeCommand(Person target, int age, bool register = true)
     {
-        public ChangeAgeCommand(Person target, int age, bool register = true)
-        {
-            Target = target;
-            Age = age;
-            Register = register;
-        }
-
-        public int Age;
-
-        public bool Register { get; }
+        Target = target;
+        Age = age;
+        Register = register;
     }
+
+    public int Age { get; }
+
+    public bool Register { get; }
 }

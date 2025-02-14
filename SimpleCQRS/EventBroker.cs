@@ -1,42 +1,37 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using SimpleCQRS.Commands;
+﻿using SimpleCQRS.Commands;
 using SimpleCQRS.Events;
 using SimpleCQRS.Queries;
 
-namespace SimpleCQRS
+namespace SimpleCQRS;
+
+public class EventBroker
 {
-    public class EventBroker
+    public List<BaseEvent> AllEvents = [];
+
+    public event EventHandler<BaseCommand<Person>> Commands;
+
+    public event EventHandler<BaseQuery> Queries;
+
+    public void ExecuteCommand(BaseCommand<Person> command)
     {
-        public List<BaseEvent> AllEvents = new List<BaseEvent>();
+        Commands?.Invoke(this, command);
+    }
 
-        public event EventHandler<BaseCommand> Commands;
+    public T ExecuteQuery<T>(BaseQuery query)
+    {
+        Queries?.Invoke(this, query);
+        return (T)query.Result;
+    }
 
-        public event EventHandler<BaseQuery> Queries;
+    public void UndoLastCommand()
+    {
+        var lastEvent = AllEvents.LastOrDefault();
 
-        public void ExecuteCommand(BaseCommand command)
+        if(lastEvent != null && lastEvent is AgeChangedEvent e)
         {
-            Commands?.Invoke(this, command);
-        }
+            ExecuteCommand(new ChangeAgeCommand(e.Target, e.OldAge, false));
 
-        public T ExecuteQuery<T>(BaseQuery query)
-        {
-            Queries?.Invoke(this, query);
-            return (T)query.Result;
-        }
-
-        public void UndoLastCommand()
-        {
-            var lastEvent = AllEvents.LastOrDefault();
-
-            if(lastEvent != null)
-            {
-                var e = lastEvent as AgeChangedEvent;
-                ExecuteCommand(new ChangeAgeCommand(e.Target, e.OldAge, false));
-
-                AllEvents.Remove(lastEvent);
-            }
+            AllEvents.Remove(lastEvent);
         }
     }
 }

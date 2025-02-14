@@ -2,44 +2,42 @@
 using SimpleCQRS.Events;
 using SimpleCQRS.Queries;
 
-namespace SimpleCQRS
+namespace SimpleCQRS;
+
+public class Person
 {
-    public class Person
+    private int _age;
+
+    private EventBroker broker;
+
+    public Person(EventBroker eventBroker)
     {
-        private int _age;
+        broker = eventBroker;
 
-        private EventBroker broker;
+        broker.Commands += OnCommand;
+        broker.Queries += OnQuery;
+    }
 
-        public Person(EventBroker eventBroker)
+    private void OnQuery(object sender, BaseQuery query)
+    {
+        if(query is GetAgeQuery && query.Target == this)
         {
-            broker = eventBroker;
-
-            broker.Commands += OnCommand;
-            broker.Queries += OnQuery;
+            query.Result = _age;
         }
+    }
 
-        private void OnQuery(object sender, BaseQuery query)
+    private void OnCommand(object sender, BaseCommand<Person> command)
+    {
+        if(command is ChangeAgeCommand cmd && command.Target == this)
         {
-            if(query is GetAgeQuery && query.Target == this)
+            var newAge = cmd.Age;
+
+            if (cmd.Register)
             {
-                query.Result = _age;
+                broker.AllEvents.Add(new AgeChangedEvent(this, _age, newAge)); 
             }
-        }
 
-        private void OnCommand(object sender, BaseCommand command)
-        {
-            if(command is ChangeAgeCommand && command.Target == this)
-            {
-                var c = (ChangeAgeCommand)command;
-                var newAge = c.Age;
-
-                if (c.Register)
-                {
-                    broker.AllEvents.Add(new AgeChangedEvent(this, _age, newAge)); 
-                }
-
-                _age = newAge;
-            }
+            _age = newAge;
         }
     }
 }

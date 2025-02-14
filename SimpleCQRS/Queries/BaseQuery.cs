@@ -1,9 +1,8 @@
-﻿namespace SimpleCQRS.Queries
-{
-    public class BaseQuery
-    {
-        public Person Target;
+﻿namespace SimpleCQRS.Queries;
 
-        public object Result;
-    }
+public abstract class BaseQuery
+{
+    public Person Target { get; set; }
+
+    public object Result { get; set;  }
 }

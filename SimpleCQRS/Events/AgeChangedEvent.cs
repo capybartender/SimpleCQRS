@@ -1,16 +1,8 @@
-﻿namespace SimpleCQRS.Events
-{
-    public class AgeChangedEvent : BaseEvent
-    {
-        public AgeChangedEvent(Person target, int oldAge, int newAge)
-        {
-            Target = target;
-            OldAge = oldAge;
-            NewAge = newAge;
-        }
+﻿namespace SimpleCQRS.Events;
 
-        public Person Target { get; }
-        public int OldAge { get; }
-        public int NewAge { get; }
-    }
+public sealed class AgeChangedEvent(Person target, int oldAge, int newAge) : BaseEvent
+{
+    public Person Target { get; } = target;
+    public int OldAge { get; } = oldAge;
+    public int NewAge { get; } = newAge;
 }

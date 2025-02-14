@@ -1,6 +1,3 @@
-﻿namespace SimpleCQRS.Events
-{
-    public class BaseEvent
-    {
-    }
-}
+﻿namespace SimpleCQRS.Events;
+
+public abstract class BaseEvent { }
