@@ -6,16 +6,17 @@ namespace SimpleCQRS;
 
 public class Person
 {
-    private int _status;
+    private Status _status;
 
-    private EventBroker broker;
+    private EventBroker _broker;
 
     public Person(EventBroker eventBroker)
     {
-        broker = eventBroker;
+        _broker = eventBroker;
+        _status = Status.ApplicationSent;
 
-        broker.Commands += OnCommand;
-        broker.Queries += OnQuery;
+        _broker.Commands += OnCommand;
+        _broker.Queries += OnQuery;
     }
 
     private void OnQuery(object sender, BaseQuery query)
@@ -34,7 +35,7 @@ public class Person
 
             if (cmd.Register)
             {
-                broker.AllEvents.Add(new StatusChangedEvent(this, _status, newStatus)); 
+                _broker.AllEvents.Add(new StatusChangedEvent(this, _status, newStatus)); 
             }
 
             _status = newStatus;
